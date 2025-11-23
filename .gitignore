@@ -1,0 +1,47 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg-info/
+.eggs/
+*.egg
+.venv/
+venv/
+ENV/
+
+# Data & Runtime
+data/
+*.db
+*.sqlite
+*.log
+*.tmp
+
+# Secrets
+.env
+*.pem
+*.key
+credentials*.json
+*_api_key*
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Project specific
+shared_qdrant/
+mcp-mem0/
+scripts/test_*
+*.bak
+
+# Sessions
+SESSION_STATE.md
+session_state.json
+.last_context.txt

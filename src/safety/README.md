@@ -13,4 +13,4 @@ Safety layers - Kill switch, constraints, audit
 | `kill_switch.py` | LAYER 1: HARD KILL SWITCH |
 
 ---
-*Auto-generert: 2025-11-24 09:00*
+*Auto-generert: 2025-11-24 10:00*

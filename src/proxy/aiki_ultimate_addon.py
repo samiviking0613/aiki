@@ -87,54 +87,134 @@ class SessionManager:
 
 class CertPinningBypass:
     """
-    Håndterer certificate pinned apps
+    SELVLÆRENDE Certificate Pinning Handler
 
-    Strategi: Passthrough for kjente pinned apps
+    Strategi:
+    1. Start med minimalt sett kjente pinned domener
+    2. Lær automatisk fra TLS-feil
+    3. Ekstraher rot-domene for bredere matching
+    4. Persist til disk - overlever restart
+    5. Aggressive first-fail passthrough for bedre UX
     """
 
-    PINNED_DOMAINS = [
-        # TikTok
-        'tiktok.com', 'tiktokv.com', 'bytedance',
-        'byteoversea.com', 'byteimg.com', 'musical.ly',
-        # Banking (Norge)
+    # Minimalt seed - resten læres automatisk
+    SEED_DOMAINS = [
+        # Banking er kritisk - må aldri MITM
         'dnb.no', 'nordea.no', 'sbanken.no', 'sparebank1.no',
         'vipps.no', 'mobilepay.no',
-        # Apple
-        'apple.com', 'icloud.com', 'apple-cloudkit.com',
-        # Google
-        'google.com', 'googleapis.com', 'gstatic.com',
-        # Social (some)
+        # Messaging med E2E
         'whatsapp.net', 'signal.org',
     ]
 
+    LEARNED_FILE = DATA_DIR / "learned_pinned_domains.json"
+
     def __init__(self):
-        self.learned_pinned: set[str] = set()
+        self.learned_domains: set[str] = set()  # Fulle domener
+        self.learned_roots: set[str] = set()     # Rot-domener (f.eks. "hotmail")
         self.failure_counts: dict[str, int] = {}
+        self.failure_timestamps: dict[str, float] = {}
+        self._load_learned()
+        logger.info(f"CertPinningBypass loaded {len(self.learned_domains)} domains, {len(self.learned_roots)} roots")
+
+    def _extract_root(self, host: str) -> str:
+        """Ekstraher rot-domene for bredere matching
+
+        m.hotmail.com -> hotmail
+        api16-normal-no1a.tiktokv.eu -> tiktokv
+        v45.tiktokcdn-eu.com -> tiktokcdn
+        """
+        parts = host.lower().split('.')
+        # Finn den mest signifikante delen (ikke tld, ikke subdomain-prefiks)
+        for part in parts:
+            # Skip korte deler, tall-prefiks, og TLDs
+            if len(part) >= 4 and not part[0].isdigit():
+                # Skip kjente prefiks
+                if part not in ('www', 'api', 'cdn', 'static', 'assets', 'm'):
+                    return part
+        return parts[0] if parts else host
+
+    def _load_learned(self):
+        """Last lærte domener fra disk"""
+        try:
+            if self.LEARNED_FILE.exists():
+                data = json.loads(self.LEARNED_FILE.read_text())
+                self.learned_domains = set(data.get('domains', []))
+                self.learned_roots = set(data.get('roots', []))
+                logger.info(f"Loaded {len(self.learned_domains)} learned pinned domains")
+        except Exception as e:
+            logger.warning(f"Could not load learned domains: {e}")
+
+    def _save_learned(self):
+        """Lagre lærte domener til disk"""
+        try:
+            data = {
+                'domains': list(self.learned_domains),
+                'roots': list(self.learned_roots),
+                'updated': datetime.now().isoformat()
+            }
+            self.LEARNED_FILE.write_text(json.dumps(data, indent=2))
+        except Exception as e:
+            logger.error(f"Could not save learned domains: {e}")
 
     def is_pinned(self, host: str) -> bool:
         """Sjekk om host er cert-pinned"""
         host_lower = host.lower()
 
-        # Kjent pinned
-        for domain in self.PINNED_DOMAINS:
+        # 1. Eksakt match i lærte domener
+        if host_lower in self.learned_domains:
+            return True
+
+        # 2. Rot-domene match (f.eks. "hotmail" matcher m.hotmail.com, outlook.hotmail.com, etc)
+        root = self._extract_root(host_lower)
+        if root in self.learned_roots:
+            return True
+
+        # 3. Seed domener (substring match)
+        for domain in self.SEED_DOMAINS:
             if domain in host_lower:
                 return True
 
-        # Lært pinned
-        if host_lower in self.learned_pinned:
-            return True
+        # 4. Sjekk om vi nylig har hatt feil på dette domenet (aggressiv first-fail)
+        if host_lower in self.failure_counts and self.failure_counts[host_lower] >= 1:
+            # Hvis vi har hatt minst 1 feil siste 5 min, passthrough
+            last_fail = self.failure_timestamps.get(host_lower, 0)
+            if time.time() - last_fail < 300:  # 5 minutter
+                return True
 
         return False
 
     def record_failure(self, host: str):
-        """Registrer TLS-feil (indikerer pinning)"""
+        """Registrer TLS-feil og lær automatisk"""
         host_lower = host.lower()
-        self.failure_counts[host_lower] = self.failure_counts.get(host_lower, 0) + 1
+        now = time.time()
 
-        # Etter 3 failures, marker som pinned
-        if self.failure_counts[host_lower] >= 3:
-            self.learned_pinned.add(host_lower)
-            logger.info(f"Learned cert-pinned domain: {host_lower}")
+        self.failure_counts[host_lower] = self.failure_counts.get(host_lower, 0) + 1
+        self.failure_timestamps[host_lower] = now
+
+        # Etter 1 feil - legg til domenet (aggressiv)
+        if self.failure_counts[host_lower] >= 1:
+            if host_lower not in self.learned_domains:
+                self.learned_domains.add(host_lower)
+
+                # Ekstraher og lagre rot-domene for bredere matching
+                root = self._extract_root(host_lower)
+                if root and len(root) >= 4:
+                    self.learned_roots.add(root)
+                    logger.info(f"🧠 AUTO-LEARNED: {host_lower} (root: {root})")
+                else:
+                    logger.info(f"🧠 AUTO-LEARNED: {host_lower}")
+
+                # Persist til disk
+                self._save_learned()
+
+    def get_stats(self) -> dict:
+        """Returner statistikk for debugging"""
+        return {
+            'learned_domains': len(self.learned_domains),
+            'learned_roots': len(self.learned_roots),
+            'recent_failures': len([t for t in self.failure_timestamps.values()
+                                   if time.time() - t < 300])
+        }
 
 
 class AIKIUltimateAddon:
@@ -240,11 +320,13 @@ class AIKIUltimateAddon:
     def _log_stats(self):
         """Log statistics"""
         uptime = time.time() - self.stats['start_time']
+        pinning_stats = self.pinning_bypass.get_stats()
         logger.info(f"Stats - Uptime: {uptime/60:.1f}min, "
                    f"Total: {self.stats['requests_total']}, "
                    f"Intercepted: {self.stats['requests_intercepted']}, "
-                   f"Interventions: {self.stats['interventions_triggered']}, "
-                   f"Injections: {self.stats['content_injections']}")
+                   f"Passthrough: {self.stats['requests_passthrough']}, "
+                   f"Learned domains: {pinning_stats['learned_domains']}, "
+                   f"Learned roots: {pinning_stats['learned_roots']}")
 
     def _identify_app(self, host: str) -> str:
         """Identifiser app fra host"""
@@ -289,15 +371,23 @@ class AIKIUltimateAddon:
         """
         Intercept TLS ClientHello for fingerprinting
 
-        Dette er hvor vi får JA3/JA4 fingerprints!
+        Dette er hvor vi får JA3/JA4 fingerprints og SNI!
         """
         try:
-            client_ip = data.context.client.peername[0]
-            host = data.context.server.address[0] if data.context.server.address else "unknown"
+            # Hent SNI (Server Name Indication) - dette er hostname!
+            sni = data.client_hello.sni
+            if not sni:
+                # Fallback til IP hvis ingen SNI
+                sni = data.context.server.address[0] if data.context.server.address else "unknown"
+
+            # Lagre SNI for senere bruk i tls_failed_client
+            # Vi må lagre det på context siden det ikke er tilgjengelig der
+            if hasattr(data, 'context'):
+                data.context._aiki_sni = sni
 
             # Sjekk for cert pinning
-            if self.pinning_bypass.is_pinned(host):
-                logger.debug(f"Passthrough pinned: {host}")
+            if self.pinning_bypass.is_pinned(sni):
+                logger.debug(f"Passthrough pinned: {sni}")
                 data.ignore_connection = True
                 self.stats['requests_passthrough'] += 1
                 return
@@ -311,10 +401,40 @@ class AIKIUltimateAddon:
     def tls_failed_client(self, data):
         """Called when TLS fails - might indicate pinning"""
         try:
-            host = data.context.server.address[0] if data.context.server.address else "unknown"
-            self.pinning_bypass.record_failure(host)
-        except Exception:
-            pass
+            # Prøv å hente SNI fra context (lagret i tls_clienthello)
+            host = getattr(data.context, '_aiki_sni', None)
+
+            # Fallback: Prøv å hente fra error message eller server address
+            if not host:
+                # Mitmproxy logger ofte hostname i error message
+                if hasattr(data, 'error') and data.error:
+                    error_str = str(data.error)
+                    # Parse "for hostname" fra error message
+                    if ' for ' in error_str:
+                        parts = error_str.split(' for ')
+                        if len(parts) > 1:
+                            host = parts[1].split(' ')[0].strip('()')
+
+            if not host:
+                host = data.context.server.address[0] if data.context.server.address else "unknown"
+
+            # Ikke lær IP-adresser direkte
+            if host and not self._is_ip_address(host):
+                self.pinning_bypass.record_failure(host)
+            else:
+                logger.debug(f"Skipping IP-based learning for: {host}")
+
+        except Exception as e:
+            logger.debug(f"TLS failed handler error: {e}")
+
+    def _is_ip_address(self, host: str) -> bool:
+        """Sjekk om host er en IP-adresse"""
+        import re
+        # IPv4 pattern
+        ipv4_pattern = r'^(\d{1,3}\.){3}\d{1,3}$'
+        # IPv6 pattern (simplified)
+        ipv6_pattern = r'^[0-9a-fA-F:]+$'
+        return bool(re.match(ipv4_pattern, host) or re.match(ipv6_pattern, host))
 
     def request(self, flow: http.HTTPFlow):
         """

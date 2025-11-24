@@ -1,10 +1,12 @@
 {
-  "timestamp": "2025-11-24T09:59:10.416881",
+  "timestamp": "2025-11-24T10:59:25.935634",
   "services": {
     "memory_daemon": {
-      "status": "running",
+      "status": "stopped",
       "uptime_hours": 0,
-      "issues": []
+      "issues": [
+        "memory daemon ikke kj\u00f8rer"
+      ]
     },
     "qdrant": {
       "status": "running",
@@ -15,11 +17,11 @@
     }
   },
   "resources": {
-    "cpu_percent": 2.7,
-    "memory_percent": 32.8,
-    "memory_available_gb": 10.3,
+    "cpu_percent": 1.0,
+    "memory_percent": 30.5,
+    "memory_available_gb": 10.65,
     "disk_percent": 3.8,
-    "disk_free_gb": 455.6,
+    "disk_free_gb": 455.59,
     "external_disk": {
       "percent": 17.4,
       "free_gb": 1574.84
@@ -27,19 +29,21 @@
     "issues": []
   },
   "costs": {
-    "today_usd": 0.0082,
-    "today_nok": 0.08,
+    "today_usd": 0.0097,
+    "today_nok": 0.1,
     "monthly_projection_usd": 1.75,
-    "monthly_projection_nok": 17.46,
+    "monthly_projection_nok": 17.52,
     "quota_remaining_percent": 99.8,
     "issues": []
   },
-  "overall_status": "healthy",
-  "all_issues": [],
+  "overall_status": "degraded",
+  "all_issues": [
+    "memory daemon ikke kj\u00f8rer"
+  ],
   "processes": {
-    "total_python_processes": 7,
+    "total_python_processes": 4,
     "total_cpu": 0,
-    "total_memory_mb": 673.41015625,
+    "total_memory_mb": 307.9453125,
     "anomalies": []
   }
 }

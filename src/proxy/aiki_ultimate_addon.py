@@ -156,9 +156,19 @@ class CertPinningBypass:
         except Exception as e:
             logger.error(f"Could not save learned domains: {e}")
 
+    # Domener vi ALLTID vil intercepte for content injection (aldri passthrough)
+    FORCE_INTERCEPT = [
+        'www.tiktok.com',  # TikTok web - for popup removal
+        'tiktok.com',
+    ]
+
     def is_pinned(self, host: str) -> bool:
         """Sjekk om host er cert-pinned"""
         host_lower = host.lower()
+
+        # 0. FORCE INTERCEPT - aldri passthrough disse
+        if host_lower in self.FORCE_INTERCEPT:
+            return False
 
         # 1. Eksakt match i lærte domener
         if host_lower in self.learned_domains:
@@ -545,6 +555,10 @@ class AIKIUltimateAddon:
             decision = flow.metadata.get('aiki_decision', {})
             user_id = flow.metadata.get('aiki_user', 'default')
 
+            # === TIKTOK HTML INJECTION (fjern "åpne i app" popup) ===
+            if app == 'tiktok' and self._is_html_response(flow):
+                self._inject_tiktok_css(flow)
+
             # === TIKTOK CONTENT INJECTION ===
             if decision.get('inject_content') and app == 'tiktok':
                 if self._is_tiktok_feed_response(flow):
@@ -571,10 +585,200 @@ class AIKIUltimateAddon:
         ]
         return any(p in url for p in patterns)
 
+    def _is_html_response(self, flow: http.HTTPFlow) -> bool:
+        """Sjekk om response er HTML"""
+        content_type = flow.response.headers.get('content-type', '')
+        return 'text/html' in content_type.lower()
+
     def _is_json_response(self, flow: http.HTTPFlow) -> bool:
         """Sjekk om response er JSON"""
         content_type = flow.response.headers.get('content-type', '')
         return 'json' in content_type.lower()
+
+    def _inject_tiktok_css(self, flow: http.HTTPFlow):
+        """
+        Injiser CSS for å skjule TikTok "åpne i app" popup/banner
+
+        Targets:
+        - Download app bar/banner
+        - "Open in app" button
+        - App promotion overlays
+        """
+        try:
+            body = flow.response.get_content()
+            if not body:
+                return
+
+            # Decompress if gzipped
+            is_gzipped = flow.response.headers.get('content-encoding', '').lower() == 'gzip'
+            if is_gzipped:
+                try:
+                    body = gzip.decompress(body)
+                except:
+                    pass
+
+            html = body.decode('utf-8', errors='ignore')
+
+            # Sjekk om det allerede er injisert
+            if 'aiki-tiktok-cleanup' in html:
+                return
+
+            # CSS som skjuler alle "åpne i app" elementer
+            # Basert på faktiske TikTok CSS-in-JS klassenavn fra uBlock filter lists
+            inject_css = '''
+<style id="aiki-tiktok-cleanup">
+/* AIKI: Fjern TikTok "åpne i app" og login popup elementer */
+
+/* === MODAL/POPUP OVERLAYS (login/app prompts) === */
+#loginContainer,
+[class*="DivModalContent"],
+[class*="DivModalContainer"],
+[class*="DivModalMask"],
+[class*="DivCenterWrapper"],
+[class*="DivModalWrapper"],
+[class*="DivLoginContainer"],
+[class*="eg439om"],
+[class*="e1gjoq3k"],
+
+/* === DOWNLOAD APP BANNERS === */
+[data-e2e="download-app-bar"],
+[data-e2e="download-app-button"],
+[data-e2e="open-in-app"],
+[data-e2e="mobile-open-app"],
+[class*="DivDownloadBar"],
+[class*="DivAppDownload"],
+[class*="DivOpenInApp"],
+[class*="DivBottomBanner"],
+[class*="StyledDownloadBar"],
+[class*="StyledOpenInApp"],
+.download-bar,
+.download-app-bar,
+.app-download-bar,
+
+/* === OPEN IN APP BUTTONS === */
+[class*="open-app"],
+[class*="openApp"],
+[class*="OpenApp"],
+[class*="download-app"],
+[class*="downloadApp"],
+[class*="DownloadApp"],
+.open-in-app,
+.open-app-btn,
+.open-app-button,
+
+/* === APP PROMO OVERLAYS === */
+[class*="app-banner"],
+[class*="appBanner"],
+[class*="AppBanner"],
+[class*="bottom-banner"],
+[class*="bottomBanner"],
+[class*="DivBottomBannerContainer"],
+.app-promotion,
+.app-promo,
+
+/* === MOBILE WEB SPECIFIC === */
+[class*="webapp-promo"],
+[class*="DivOpenInAppContainer"],
+[class*="get-app"],
+[class*="getApp"],
+[class*="DivGetApp"],
+
+/* === TIKTOK LITE PROMO === */
+[class*="lite-banner"],
+[class*="LiteBanner"],
+[class*="DivLiteBanner"],
+
+/* === GENERIC CATCH-ALL === */
+div[class*="app"][class*="download"],
+div[class*="app"][class*="banner"],
+a[href*="onelink"],
+a[href*="app.link"],
+a[href*="tiktok.com/download"],
+
+/* === FULLSCREEN MODAL OVERLAYS === */
+div[class*="DivModal"][role="dialog"],
+div[class*="Modal"][aria-modal="true"],
+[class*="DivMask"],
+[class*="DivOverlay"][style*="position: fixed"]
+{
+    display: none !important;
+    visibility: hidden !important;
+    height: 0 !important;
+    max-height: 0 !important;
+    min-height: 0 !important;
+    overflow: hidden !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+    position: absolute !important;
+    top: -9999px !important;
+    left: -9999px !important;
+}
+
+/* Fjern body scroll lock fra modals */
+body {
+    overflow: auto !important;
+    padding-bottom: 0 !important;
+    position: static !important;
+}
+
+/* Fjern blur/overlay som noen ganger brukes */
+body > div[style*="filter"],
+body > div[style*="blur"] {
+    filter: none !important;
+}
+</style>
+
+<script id="aiki-tiktok-cleanup-js">
+/* AIKI: Dynamisk fjern popups som lastes etter page load */
+(function() {
+    var removePopups = function() {
+        var selectors = [
+            '#loginContainer',
+            '[class*="DivModalContainer"]',
+            '[class*="DivModalMask"]',
+            '[class*="DivDownloadBar"]',
+            '[class*="DivOpenInApp"]',
+            '[data-e2e="download-app-bar"]'
+        ];
+        selectors.forEach(function(sel) {
+            var els = document.querySelectorAll(sel);
+            els.forEach(function(el) { el.remove(); });
+        });
+        document.body.style.overflow = 'auto';
+    };
+
+    /* Run on load and observe for new elements */
+    removePopups();
+    setInterval(removePopups, 1000);
+
+    /* MutationObserver for dynamisk innhold */
+    var observer = new MutationObserver(removePopups);
+    observer.observe(document.body, {childList: true, subtree: true});
+})();
+</script>
+'''
+
+            # Injiser CSS rett etter <head>
+            if '<head>' in html:
+                html = html.replace('<head>', '<head>' + inject_css, 1)
+            elif '<HEAD>' in html:
+                html = html.replace('<HEAD>', '<HEAD>' + inject_css, 1)
+            else:
+                # Fallback: legg til før </body>
+                html = html.replace('</body>', inject_css + '</body>')
+                html = html.replace('</BODY>', inject_css + '</BODY>')
+
+            # Re-compress if was gzipped
+            modified_body = html.encode('utf-8')
+            if is_gzipped:
+                modified_body = gzip.compress(modified_body)
+
+            flow.response.set_content(modified_body)
+            self.stats['content_injections'] += 1
+            logger.info(f"💉 Injected TikTok app-popup CSS cleanup")
+
+        except Exception as e:
+            logger.error(f"TikTok CSS injection error: {e}")
 
     def _inject_tiktok_content(self, flow: http.HTTPFlow, user_id: str):
         """

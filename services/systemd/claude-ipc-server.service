@@ -1,0 +1,25 @@
+[Unit]
+Description=Claude IPC Server - Real-Time AI-to-AI Communication
+After=network.target
+Before=aiki-prime.service
+
+[Service]
+Type=simple
+User=jovnna
+WorkingDirectory=/home/jovnna/aiki
+Environment="PYTHONUNBUFFERED=1"
+ExecStart=/usr/bin/python3 /home/jovnna/aiki/claude_ipc_server.py
+Restart=always
+RestartSec=5
+StandardOutput=journal
+StandardError=journal
+
+# Resource limits
+MemoryMax=200M
+CPUQuota=20%
+
+# Cleanup socket on stop
+ExecStopPost=/bin/rm -f /tmp/claude_aiki.sock
+
+[Install]
+WantedBy=multi-user.target

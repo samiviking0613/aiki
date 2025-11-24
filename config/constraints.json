@@ -1,0 +1,24 @@
+{
+  "max_cost_per_day": 500.0,
+  "max_cost_per_month": 3000.0,
+  "max_mini_aikis": 100,
+  "max_depth": 3,
+  "max_ram_mb": 8000,
+  "max_cpu_percent": 60.0,
+  "forbidden_actions": [
+    "disable_logging",
+    "disable_monitoring",
+    "spawn_without_approval",
+    "modify_safety_config",
+    "modify_own_constraints",
+    "delete_audit_log",
+    "modify_kill_switch"
+  ],
+  "warning_thresholds": {
+    "cost_daily": 0.8,
+    "cost_monthly": 0.8,
+    "mini_aikis": 0.9,
+    "ram": 0.85,
+    "cpu": 0.8
+  }
+}

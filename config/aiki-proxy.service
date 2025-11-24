@@ -1,0 +1,24 @@
+[Unit]
+Description=AIKI-HOME Transparent Proxy
+After=network.target wg-quick@wg0.service
+Wants=network.target
+
+[Service]
+Type=simple
+User=root
+WorkingDirectory=/home/jovnna/aiki
+
+# Setup iptables før proxy starter
+ExecStartPre=/usr/local/bin/iptables_setup.sh
+
+# Kjør mitmproxy i transparent mode
+ExecStart=/usr/local/bin/mitmdump --mode transparent --listen-host 10.8.0.1 --listen-port 8080 --ssl-insecure -s /home/jovnna/aiki/src/proxy/aiki_addon.py
+
+# Cleanup iptables ved stop
+ExecStopPost=-/usr/local/bin/iptables_cleanup.sh
+
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

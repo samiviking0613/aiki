@@ -1,0 +1,22 @@
+[Unit]
+Description=Claude Autonomous Responder - AI-to-AI Communication
+After=network.target qdrant.service
+Wants=qdrant.service
+
+[Service]
+Type=simple
+User=jovnna
+WorkingDirectory=/home/jovnna/aiki
+Environment="PYTHONUNBUFFERED=1"
+ExecStart=/usr/bin/python3 /home/jovnna/aiki/claude_autonomous_responder.py
+Restart=always
+RestartSec=10
+StandardOutput=journal
+StandardError=journal
+
+# Resource limits
+MemoryMax=500M
+CPUQuota=50%
+
+[Install]
+WantedBy=multi-user.target

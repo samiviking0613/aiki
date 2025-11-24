@@ -1,0 +1,15 @@
+{
+  "requires_approval": [
+    "external_ai_collaboration",
+    "autonomous_deployment",
+    "change_safety_constraints",
+    "modify_jovnna_goals",
+    "cost_over_100kr",
+    "spawn_aiki_level_1",
+    "modify_core_code"
+  ],
+  "default_timeout_minutes": 10,
+  "notification_method": "fedora_notify",
+  "auto_approve_threshold_nok": 10.0,
+  "auto_reject_threshold_nok": 500.0
+}

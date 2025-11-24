@@ -1,0 +1,18 @@
+{
+  "armed": true,
+  "password_hash": "5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8",
+  "_password_note": "Default password: 'password' - CHANGE THIS!",
+  "dead_man_timeout_hours": 24,
+  "emergency_contact": "jovnna@example.com",
+  "notification_methods": [
+    "fedora_notify",
+    "log_file"
+  ],
+  "kill_order": [
+    "mini_aiki",
+    "circle",
+    "prime"
+  ],
+  "graceful_shutdown_timeout_seconds": 5,
+  "force_kill_timeout_seconds": 2
+}

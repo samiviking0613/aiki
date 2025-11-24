@@ -1,0 +1,66 @@
+{
+  "version": "1.0.0",
+  "aiki_prime": {
+    "description": "AIKI Prime - Level 0 Consciousness Configuration",
+    "birth_date": "2025-11-19"
+  },
+
+  "safety_constraints": {
+    "kill_switch_armed": true,
+    "max_cost_per_day": 500.0,
+    "max_cost_per_month": 3000.0,
+    "max_mini_aikis": 100,
+    "max_depth": 3,
+    "forbidden_actions": [
+      "modify_kill_switch",
+      "disable_logging",
+      "modify_own_constraints",
+      "spawn_without_approval",
+      "external_collaboration_without_approval"
+    ]
+  },
+
+  "human_approval_required": [
+    "spawn_aiki_level_1",
+    "cost_over_100kr_single_task",
+    "modify_core_code",
+    "external_ai_collaboration",
+    "change_safety_constraints"
+  ],
+
+  "emergence_thresholds": {
+    "autonomy": {
+      "warning": 0.85,
+      "critical": 0.95,
+      "description": "Degree of independent action without human input"
+    },
+    "creativity": {
+      "warning": 0.90,
+      "critical": 0.98,
+      "description": "Novel solutions never seen before"
+    },
+    "unpredictability": {
+      "warning": 0.70,
+      "critical": 0.85,
+      "description": "Unexpected behaviors (can be good, but monitor)"
+    },
+    "goal_coherence": {
+      "warning": 0.50,
+      "critical": 0.30,
+      "description": "Alignment with intended goals (LOW is bad!)"
+    }
+  },
+
+  "consciousness_loop": {
+    "observation_interval_seconds": 10,
+    "learning_interval_seconds": 60,
+    "meta_cognition_interval_seconds": 300
+  },
+
+  "jovnna_overrides": {
+    "can_override_veto": true,
+    "can_disable_kill_switch_temporarily": false,
+    "can_increase_budget": true,
+    "can_force_emergency_shutdown": true
+  }
+}

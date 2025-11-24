@@ -1,0 +1,28 @@
+[Unit]
+Description=AIKI Ultimate Unified Self-Healing Daemon
+After=network.target qdrant.service docker.service
+Wants=qdrant.service docker.service
+
+[Service]
+Type=simple
+User=jovnna
+Group=jovnna
+WorkingDirectory=/home/jovnna/aiki
+Environment="PYTHONUNBUFFERED=1"
+ExecStart=/usr/bin/python3 /home/jovnna/aiki/aiki_ultimate_selfhealing.py
+Restart=always
+RestartSec=10
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=aiki-selfhealing
+
+# Resource limits
+MemoryMax=512M
+CPUQuota=50%
+
+# Security
+NoNewPrivileges=true
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target

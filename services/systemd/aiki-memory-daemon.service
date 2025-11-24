@@ -1,0 +1,24 @@
+[Unit]
+Description=AIKI Memory Daemon - Seamless Background Memory System
+Documentation=file:///home/jovnna/aiki/SEAMLESS_MEMORY_ARCHITECTURE.md
+After=network.target
+
+[Service]
+Type=simple
+User=jovnna
+WorkingDirectory=/home/jovnna/aiki
+ExecStart=/usr/bin/python3 /home/jovnna/aiki/memory_daemon.py
+Restart=on-failure
+RestartSec=10
+
+# Logging
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=aiki-memory-daemon
+
+# Security
+NoNewPrivileges=true
+PrivateTmp=true
+
+[Install]
+WantedBy=default.target

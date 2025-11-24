@@ -1,0 +1,190 @@
+RAG_PIPELINE_V1 FOR AIKI (PYTHON + QDRANT + MEM0)
+
+MÅL:
+- Bygge en enkel, robust RAG-pipeline som Aiki kan bruke til koding og generell kunnskapsbruk.
+- All kode skrives i Python.
+- Lagring av vektorer gjøres i Qdrant.
+- Langtidsminne håndteres av Mem0.
+- LLM-kall gjøres via eksisterende API-klient (OpenAI/Anthropic), konfigurerbart.
+
+KOMPONENTER:
+1) Ingest-modul (dokumenter inn)
+2) Index-modul (embeddings -> Qdrant)
+3) Query-modul (spørsmål -> relevante dokumenter)
+4) Context-builder (slår sammen dokumenter + brukerprompt)
+5) LLM-caller (sender til valgt modell)
+6) Konfigurasjon (yaml/toml)
+
+----------------------------------------------------------------------
+1) INGEST-MODUL
+----------------------------------------------------------------------
+Funksjon: lese rå filer og gjøre dem klare til chunking + embedding.
+
+Krav:
+- Støtt filtyper: .md, .txt, .py (kode), senere .pdf.
+- Returner en liste av "Document"-objekter med felter:
+  - id (str, unik)
+  - source (path eller label, f.eks. "aiki/python_style_reference.md")
+  - content (ren tekst)
+  - metadata (dict: { "type": "python_style", "tags": ["python","style"] })
+
+Forslag til signatur i Python:
+- def load_documents(paths: list[str]) -> list[Document]:
+
+Chunking:
+- Egen funksjon:
+  - def chunk_documents(docs: list[Document], max_tokens: int = 512) -> list[Chunk]
+- Chunk har:
+  - chunk_id
+  - parent_doc_id
+  - content
+  - metadata (arver + chunk_index)
+
+Chunk-strategi:
+- For .md og .txt: del på avsnitt / overskrifter + tokenlengde.
+- For .py: del etter funksjoner/klasser + tokenlengde.
+
+----------------------------------------------------------------------
+2) INDEX-MODUL (EMBEDDINGS -> QDRANT)
+----------------------------------------------------------------------
+Formål:
+- Ta chunkene fra ingest, lag embeddings, skriv dem til Qdrant.
+
+Krav:
+- Konfigurasjon skal definere:
+  - EMBEDDING_MODEL (f.eks. "text-embedding-3-large" eller annen du velger)
+  - QDRANT_URL
+  - QDRANT_COLLECTION_NAME (f.eks. "aiki_code_knowledge")
+
+Funksjoner:
+- def embed_chunks(chunks: list[Chunk]) -> list[EmbeddedChunk]
+  - kaller embedding-API batchvis
+  - lagrer vektor som list[float]
+
+- def upsert_to_qdrant(embedded_chunks: list[EmbeddedChunk]) -> None
+  - oppretter kolleksjon hvis den ikke finnes
+  - bruker parent_doc_id + chunk_id som id
+  - legger inn metadata: { "source": ..., "tags": ..., "chunk_index": ... }
+
+----------------------------------------------------------------------
+3) QUERY-MODUL (SPØRSMÅL -> RELEVANTE DOKUMENTER)
+----------------------------------------------------------------------
+Formål:
+- Ta inn brukerprompt og returnere de mest relevante chunkene fra Qdrant.
+
+Funksjon:
+- def retrieve_relevant_chunks(question: str, top_k: int = 5, filters: dict | None = None) -> list[Chunk]
+
+Steg:
+1. Embed spørsmålet med samme EMBEDDING_MODEL.
+2. Kjør vektor-søk i Qdrant (cosine eller dot_product).
+3. Bruk eventuelle filtrer:
+   - f.eks. {"tags": ["python"]} for python-relevante docs.
+4. Returner liste over Chunk-objekter (content + metadata).
+
+----------------------------------------------------------------------
+4) CONTEXT-BUILDER
+----------------------------------------------------------------------
+Formål:
+- Lage en samlet prompt-kontekst som LLM skal få.
+
+Funksjon:
+- def build_rag_prompt(system_instruction: str, user_question: str, chunks: list[Chunk]) -> str
+
+Regler:
+- Systeminstruksjon skal T Y D E L I G si:
+  - "Bruk KUN informasjonen under som kilde når du svarer."
+  - "Hvis informasjonen ikke er nok, si at du ikke vet."
+  - "Ikke finn på funksjoner, klasser eller moduler som ikke står der."
+
+Struktur:
+
+"""
+SYSTEM:
+{system_instruction}
+
+KONTEKST (HENTET FRA DOKUMENTER):
+[DOC 1 - {source}]
+{chunk1_content}
+
+[DOC 2 - {source}]
+{chunk2_content}
+
+...
+
+SPØRSMÅL FRA BRUKER:
+{user_question}
+"""
+
+----------------------------------------------------------------------
+5) LLM-CALLER
+----------------------------------------------------------------------
+Funksjon:
+- def call_llm(prompt: str, model: str, max_tokens: int = 1024) -> str
+
+Krav:
+- Modellnavn konfigurerbart (f.eks. "gpt-4.1", "claude-3.5-sonnet").
+- Timeout + enkel feilhandling.
+- Returner ren tekst.
+
+----------------------------------------------------------------------
+6) EN SAMLENDE FUNKSJON (HIGH-LEVEL RAG CALL)
+----------------------------------------------------------------------
+def answer_with_rag(
+    user_question: str,
+    system_instruction: str,
+    top_k: int = 5,
+    model: str = "claude-3.5-sonnet"
+) -> str:
+    """
+    1. Hent relevante chunks fra Qdrant.
+    2. Bygg RAG-prompt (system + kontekst + spørsmål).
+    3. Kall valgt LLM.
+    4. Returner svar.
+    """
+
+----------------------------------------------------------------------
+7) KONFIGURASJON (YAML/TOML)
+----------------------------------------------------------------------
+
+Lag en konfig-fil, f.eks. "rag_config.yaml":
+
+embedding_model: "text-embedding-3-large"
+qdrant:
+  url: "http://localhost:6333"
+  api_key: null
+  collection: "aiki_code_knowledge"
+
+llm_default_model: "claude-3.5-sonnet"
+max_context_tokens: 8000
+default_top_k: 5
+
+----------------------------------------------------------------------
+8) EKSTRA: STRAM SYSTEM-PROMPT FOR Å HINDRE FANTASI
+----------------------------------------------------------------------
+
+Eksempel på system_instruction som skal brukes i denne RAG-pipelinen:
+
+"Du er Aiki sin tekniske assistent. Du skal kun bruke informasjonen i KONTEKST-seksjonen som kilde når du svarer. 
+Hvis KONTEKST ikke inneholder nok informasjon til å svare sikkert, skal du eksplisitt si at du ikke vet, 
+eller at det ikke står i dokumentene. Du skal ikke finne på funksjoner, klasser, biblioteker eller detaljer som ikke finnes i KONTEKST. 
+Hvis brukeren spør om noe utenfor KONTEKST, forklar hva dokumentene faktisk sier og hvor grensene går."
+
+----------------------------------------------------------------------
+9) OPPGAVE TIL DEG (CLAUDE):
+----------------------------------------------------------------------
+
+1. Implementer denne pipelinen i ren Python.
+2. Lag en liten mappe-struktur:
+   - aiki_rag/
+       __init__.py
+       ingest.py
+       index.py
+       query.py
+       context.py
+       llm.py
+       config.py
+       main.py (CLI for å teste: indexere + stille spørsmål)
+3. Legg inn grunnleggende feilhåndtering og logging.
+4. Gjør det lett å utvide senere med flere koleksjoner (f.eks. "aiki_architecture", "aiki_economy").
+

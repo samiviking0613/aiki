@@ -1,0 +1,29 @@
+[Unit]
+Description=AIKI System Health Daemon - Continuous System Monitoring
+Documentation=https://github.com/samiviking0613/aiki
+After=network.target
+
+[Service]
+Type=simple
+User=jovnna
+WorkingDirectory=/home/jovnna/aiki
+ExecStart=/usr/bin/python3.11 /home/jovnna/aiki/system_health_daemon.py
+Restart=always
+RestartSec=10
+StandardOutput=journal
+StandardError=journal
+
+# Environment
+Environment="PYTHONUNBUFFERED=1"
+Environment="PATH=/usr/local/bin:/usr/bin:/bin"
+
+# Security hardening
+PrivateTmp=true
+NoNewPrivileges=true
+# Note: Disabled ProtectSystem/ProtectHome because Qdrant needs write access
+#ProtectSystem=strict
+#ProtectHome=read-only
+#ReadWritePaths=/home/jovnna/aiki
+
+[Install]
+WantedBy=default.target

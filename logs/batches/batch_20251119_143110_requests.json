@@ -1,0 +1,35 @@
+{
+  "batch_id": "batch_20251119_143110",
+  "purpose": "test",
+  "created_at": "2025-11-19T14:31:10.174132",
+  "requests": [
+    {
+      "custom_id": "test_reflection_1",
+      "params": {
+        "model": "anthropic/claude-3.5-haiku",
+        "messages": [
+          {
+            "role": "user",
+            "content": "Skriv en kort refleksjon om testing av batch API."
+          }
+        ],
+        "temperature": 0.7,
+        "max_tokens": 500
+      }
+    },
+    {
+      "custom_id": "test_reflection_2",
+      "params": {
+        "model": "anthropic/claude-3.5-haiku",
+        "messages": [
+          {
+            "role": "user",
+            "content": "Hva er fordelene med batch processing?"
+          }
+        ],
+        "temperature": 0.7,
+        "max_tokens": 500
+      }
+    }
+  ]
+}

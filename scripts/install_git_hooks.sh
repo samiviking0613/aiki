@@ -31,5 +31,20 @@ EOF
 
 chmod +x "$HOOKS_DIR/pre-commit"
 
+# Create post-commit hook for auto-push
+cat > "$HOOKS_DIR/post-commit" << 'EOF'
+#!/bin/bash
+# AIKI Post-commit hook - Auto-push to GitHub
+
+# Only push if remote exists
+if git remote | grep -q origin; then
+    echo "Auto-pushing to GitHub..."
+    git push origin main --quiet 2>/dev/null &
+fi
+EOF
+
+chmod +x "$HOOKS_DIR/post-commit"
+
 echo "Installed: pre-commit (README auto-generation)"
+echo "Installed: post-commit (auto-push to GitHub)"
 echo "Done!"

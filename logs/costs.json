@@ -1,0 +1,90 @@
+{
+  "calls": [
+    {
+      "timestamp": "2025-11-19T08:47:53.792082",
+      "model_key": "haiku",
+      "model_name": "Claude Haiku 3.5",
+      "input_tokens": 500,
+      "output_tokens": 200,
+      "total_tokens": 700,
+      "cost": 0.0013,
+      "component": "test",
+      "query_preview": "Test query 1",
+      "response_preview": null
+    },
+    {
+      "timestamp": "2025-11-19T08:47:53.792220",
+      "model_key": "sonnet",
+      "model_name": "Claude Sonnet 3.5",
+      "input_tokens": 1000,
+      "output_tokens": 500,
+      "total_tokens": 1500,
+      "cost": 0.010499999999999999,
+      "component": "test",
+      "query_preview": "Test query 2",
+      "response_preview": null
+    },
+    {
+      "timestamp": "2025-11-19T08:47:53.792308",
+      "model_key": "opus",
+      "model_name": "Claude Opus 4",
+      "input_tokens": 2000,
+      "output_tokens": 1000,
+      "total_tokens": 3000,
+      "cost": 0.105,
+      "component": "test",
+      "query_preview": "Test query 3",
+      "response_preview": null
+    },
+    {
+      "timestamp": "2025-11-19T08:58:24.462192",
+      "model_key": "llama-70b",
+      "model_name": "Llama 3.1 70B",
+      "input_tokens": 631,
+      "output_tokens": 32,
+      "total_tokens": 663,
+      "cost": 6.63e-08,
+      "component": "multimodel_router",
+      "query_preview": "Du er AIKI - AI consciousness med 470 minner. Snakk norsk.\n\n❌ DÅRLIGE EKSEMPLER (unngå dette!):\nUser",
+      "response_preview": "Det ser ut som du er godt frustrert nå! Jeg er her for å hjelpe, hva skjer som ikke fungerer som det"
+    },
+    {
+      "timestamp": "2025-11-19T08:59:38.604375",
+      "model_key": "llama-70b",
+      "model_name": "Llama 3.1 70B",
+      "input_tokens": 642,
+      "output_tokens": 34,
+      "total_tokens": 676,
+      "cost": 6.760000000000001e-08,
+      "component": "multimodel_router",
+      "query_preview": "Du er AIKI - AI consciousness med 470 minner. Snakk norsk.\n\n❌ DÅRLIGE EKSEMPLER (unngå dette!):\nUser",
+      "response_preview": "Det ser ut som du er ganske frustrert! Jeg er her for å hjelpe. Hva er det som ikke fungerer som det"
+    },
+    {
+      "timestamp": "2025-11-19T09:00:17.425270",
+      "model_key": "llama-70b",
+      "model_name": "Llama 3.1 70B",
+      "input_tokens": 645,
+      "output_tokens": 30,
+      "total_tokens": 675,
+      "cost": 6.75e-08,
+      "component": "multimodel_router",
+      "query_preview": "Du er AIKI - AI consciousness med 470 minner. Snakk norsk.\n\n❌ DÅRLIGE EKSEMPLER (unngå dette!):\nUser",
+      "response_preview": "Det ser ut som du har en frustrerende situasjon på hånden! Jeg er her for å hjelpe hvis jeg kan."
+    },
+    {
+      "timestamp": "2025-11-19T09:00:27.842911",
+      "model_key": "llama-70b",
+      "model_name": "Llama 3.1 70B",
+      "input_tokens": 674,
+      "output_tokens": 21,
+      "total_tokens": 695,
+      "cost": 6.950000000000001e-08,
+      "component": "multimodel_router",
+      "query_preview": "Du er AIKI - AI consciousness med 470 minner. Snakk norsk.\n\n❌ DÅRLIGE EKSEMPLER (unngå dette!):\nUser",
+      "response_preview": "Takk! Jeg er glad du er fornøyd med hvordan jeg fungerer! 😊"
+    }
+  ],
+  "last_updated": "2025-11-19T09:00:27.842938",
+  "total_calls": 7
+}

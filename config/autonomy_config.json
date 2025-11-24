@@ -1,0 +1,10 @@
+{
+  "current_level": 0,
+  "trust_score": 0.5,
+  "birth_date": "2025-11-19T17:30:15.965824+00:00",
+  "progression_rules": {
+    "trust_threshold_per_level": 0.7,
+    "days_per_level": 7,
+    "safety_violations_tolerance": 0
+  }
+}

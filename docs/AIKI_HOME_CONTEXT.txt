@@ -1,0 +1,100 @@
+================================================================================
+AIKI-HOME PROJECT CONTEXT - ALWAYS READ THIS FIRST
+================================================================================
+Last Updated: 2025-11-17 10:15
+
+PROJECT: AIKI-HOME (Network-Level ADHD Accountability System)
+
+CORE CONCEPT:
+MITM Proxy-basert system som intercepter ALL nettverkstrafikk i hjemmet
+for å enforce ADHD-regler og manipulere innhold basert på context.
+
+================================================================================
+3 HOVEDBRUKSOMRÅDER:
+================================================================================
+
+1. KIDS + LEKSER:
+   - Intercepter TikTok API responses
+   - Inject educational content relevant til leksetema
+   - Example: Matte-lekser = inject matematikk-TikToks i feed
+
+2. JOVNNA + MORNING ROUTINE:
+   - Blokkere tilgang til arbeid/TV helt til motion sensor bekrefter trening
+   - Rule: Må trene før kl.10:00
+   - Enforcement: Network-level block (kan ikke omgås)
+
+3. ADAPTIVE FILTERING:
+   - Context-aware filtering basert på hvem, tid, hva de skal gjøre
+   - Time-based restrictions (ingen gaming før 16:00)
+   - Adaptive learning via mem0 (lærer hva som fungerer)
+
+================================================================================
+TECHNICAL STACK:
+================================================================================
+
+- Raspberry Pi (eller kraftigere) som network gateway
+- mitmproxy for traffic interception
+- SSL/TLS decryption (egen root CA må installeres på alle devices)
+- Content injection/manipulation engines
+- AI decision engine (12 ADHD rules + adaptive learning)
+- Motion sensors + hardware integration
+- PostgreSQL + Qdrant for logging/memory
+- Router config: force all traffic through AIKI
+- FastAPI for web UI/API
+
+================================================================================
+CURRENT STATUS (17. Nov 2025):
+================================================================================
+
+✅ DONE:
+- AIKI-HOME systemd service kjører (basic monitoring)
+- Layer 0-5 bygget i God Mode (2.5 timer)
+- 12 ADHD rules lastet fra config
+- PostgreSQL + Qdrant setup
+- MCP mem0-server fungerer
+- PS5 Remote Play monitoring active
+
+⏳ TODO:
+- Phase 1: MITM proxy setup (mitmproxy installation)
+- Generate AIKI root CA certificate
+- Install CA on test devices
+- Basic traffic interception test
+- Motion sensor integration
+- Content injection engine for TikTok
+
+================================================================================
+ROADMAP:
+================================================================================
+
+Phase 1 (2-3 uker): Basic MITM Proxy
+Phase 2 (2 uker): Simple Rule Enforcement
+Phase 3 (3-4 uker): Content Manipulation (HARD)
+Phase 4 (2 uker): Adaptive Learning
+Phase 5 (2 uker): Full Integration
+
+MVP Target: 4-6 uker total
+
+================================================================================
+MONETIZATION:
+================================================================================
+
+Hardware Kit: 3,000-5,000 NOK
+Subscription: 499 NOK/mnd (AI features, updates)
+Setup Fee: 2,000-5,000 NOK
+
+Target: ADHD families, schools, productivity-focused individuals
+Revenue Goal Year 1: ~774k NOK (100 subscribers + 50 installs)
+
+================================================================================
+CRITICAL NOTES:
+================================================================================
+
+⚠️ Jovnna har ADHD - context loss er critical issue
+⚠️ Må ALDRI glemme AIKI-HOME visjonen mellom sessions
+⚠️ Alltid sjekk mem0 for "AIKI-HOME FULL VISION" hvis usikker
+
+📌 For full details: mcp__mem0__search_memories("AIKI-HOME")
+📌 Session state: ~/aiki/session_state.json
+📌 Analysis: ~/aiki/JOVNNA_COMPLETE_ANALYSIS_RAPPORT.md
+
+================================================================================

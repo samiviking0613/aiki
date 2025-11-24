@@ -1,5 +1,5 @@
 {
-  "timestamp": "2025-11-24T01:58:36.262927",
+  "timestamp": "2025-11-24T02:58:40.683988",
   "services": {
     "memory_daemon": {
       "status": "running",
@@ -15,9 +15,9 @@
     }
   },
   "resources": {
-    "cpu_percent": 1.0,
-    "memory_percent": 32.6,
-    "memory_available_gb": 10.34,
+    "cpu_percent": 0.9,
+    "memory_percent": 32.7,
+    "memory_available_gb": 10.32,
     "disk_percent": 3.8,
     "disk_free_gb": 455.6,
     "external_disk": {
@@ -27,10 +27,10 @@
     "issues": []
   },
   "costs": {
-    "today_usd": 0.0016,
+    "today_usd": 0.0025,
     "today_nok": 0.02,
     "monthly_projection_usd": 1.72,
-    "monthly_projection_nok": 17.21,
+    "monthly_projection_nok": 17.24,
     "quota_remaining_percent": 100.0,
     "issues": []
   },
@@ -39,7 +39,7 @@
   "processes": {
     "total_python_processes": 7,
     "total_cpu": 0,
-    "total_memory_mb": 671.69140625,
+    "total_memory_mb": 672.12890625,
     "anomalies": []
   }
 }

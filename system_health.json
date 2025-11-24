@@ -1,5 +1,5 @@
 {
-  "timestamp": "2025-11-24T18:59:01.003350",
+  "timestamp": "2025-11-24T19:58:15.838111",
   "services": {
     "memory_daemon": {
       "status": "stopped",
@@ -29,11 +29,11 @@
     "issues": []
   },
   "costs": {
-    "today_usd": 0.0509,
-    "today_nok": 0.51,
-    "monthly_projection_usd": 1.91,
-    "monthly_projection_nok": 19.06,
-    "quota_remaining_percent": 99.0,
+    "today_usd": 0.0562,
+    "today_nok": 0.56,
+    "monthly_projection_usd": 1.93,
+    "monthly_projection_nok": 19.26,
+    "quota_remaining_percent": 98.9,
     "issues": []
   },
   "overall_status": "degraded",
@@ -41,9 +41,9 @@
     "memory daemon ikke kj\u00f8rer"
   ],
   "processes": {
-    "total_python_processes": 5,
+    "total_python_processes": 4,
     "total_cpu": 0,
-    "total_memory_mb": 335.69140625,
+    "total_memory_mb": 337.3828125,
     "anomalies": []
   }
 }

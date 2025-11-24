@@ -56,7 +56,26 @@ Prime i skyen aggregerer anonyme "hva fungerer"-data fra alle hjem. Lokalt kjør
 
 **Mer context:** `mcp__mem0__search_memories("AIKI-HOME")`
 
-## Viktige filer
+## Traffic Intelligence Platform (NYTT - 24. nov 2025)
+
+**5,408 linjer** - verdens mest kompliserte MITM proxy!
+
+**Lokasjon:** `src/proxy/engines/`
+
+| Engine | Fil | Funksjon |
+|--------|-----|----------|
+| TLS Fingerprint | `tls_fingerprint.py` (20KB) | JA3/JA4 app-identifikasjon |
+| App Classifier | `app_classifier.py` (31KB) | ML klassifisering, addiction risk |
+| Behavioral | `behavioral_analytics.py` (30KB) | Dopamine loop detection |
+| Content Intel | `content_intelligence.py` (24KB) | Dark pattern detection |
+| Intervention | `active_intervention.py` (34KB) | **TikTok injection**, boss battles |
+| Federation | `federation.py` (24KB) | P2P learning, differential privacy |
+
+**Master Controller:** `src/proxy/aiki_ultimate_addon.py`
+
+**Kjøring:** `mitmdump --mode transparent -s src/proxy/aiki_ultimate_addon.py`
+
+## Viktige filer (legacy)
 
 | Komponent | Fil |
 |-----------|-----|
@@ -64,7 +83,7 @@ Prime i skyen aggregerer anonyme "hva fungerer"-data fra alle hjem. Lokalt kjør
 | HOME Circle | `src/circles/home_circle.py` |
 | Network Circle | `src/circles/network_circle.py` |
 | Activity Monitor | `src/aiki_home/tools/input_activity_monitor.py` |
-| MITM Proxy | `src/proxy/aiki_addon.py` |
+| MITM Proxy (basic) | `src/proxy/aiki_addon.py` |
 | Decision Engine | `src/proxy/decision_engine.py` |
 
 ## mem0 kommandoer

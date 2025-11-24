@@ -1,0 +1,538 @@
+"""
+AIKI Traffic Intelligence Platform
+===================================
+ULTIMATE MITMPROXY ADDON
+
+Verdens mest kompliserte MITM proxy!
+
+Integrerer alle engines:
+1. TLS Fingerprinting (JA3/JA4)
+2. ML App Classification
+3. Behavioral Analytics
+4. Content Intelligence
+5. Active Intervention
+6. Federation Protocol
+
+Bruk: mitmdump --mode transparent -s aiki_ultimate_addon.py
+"""
+
+import gzip
+import json
+import logging
+import sqlite3
+import threading
+import time
+from datetime import datetime
+from pathlib import Path
+
+from mitmproxy import ctx, http
+
+# Setup logging
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s [AIKI] %(levelname)s: %(message)s'
+)
+logger = logging.getLogger('aiki')
+
+# Data directory
+DATA_DIR = Path("/home/jovnna/aiki/data/proxy")
+DATA_DIR.mkdir(parents=True, exist_ok=True)
+
+# Import AIKI engines
+try:
+    from engines.tls_fingerprint import TLSFingerprintEngine
+    from engines.app_classifier import AppClassifierEngine, create_classifier
+    from engines.behavioral_analytics import BehavioralAnalyticsEngine, create_analytics_engine
+    from engines.content_intelligence import ContentIntelligenceEngine, create_content_intelligence
+    from engines.active_intervention import ActiveInterventionEngine, create_intervention_engine
+    from engines.federation import FederationEngine, create_federation_engine
+    from engines.app_throttler import AppThrottler, TikTokThrottler, ThrottleLevel, create_throttler
+    ENGINES_AVAILABLE = True
+except ImportError as e:
+    logger.warning(f"Could not import engines: {e}")
+    ENGINES_AVAILABLE = False
+
+
+class SessionManager:
+    """Håndterer bruker-sessions"""
+
+    def __init__(self):
+        self.sessions: dict[str, dict] = {}
+        self.default_user = "kids"  # Default user profile
+
+    def get_or_create_session(self, client_ip: str) -> dict:
+        """Hent eller opprett session for klient"""
+        if client_ip not in self.sessions:
+            self.sessions[client_ip] = {
+                'user_id': self.default_user,
+                'session_id': None,
+                'start_time': time.time(),
+                'app_times': {},
+                'current_app': None,
+                'is_dopamine_loop': False,
+                'last_activity': time.time()
+            }
+        return self.sessions[client_ip]
+
+    def update_activity(self, client_ip: str, app: str):
+        """Oppdater aktivitet"""
+        session = self.get_or_create_session(client_ip)
+        session['last_activity'] = time.time()
+        session['current_app'] = app
+
+        if app not in session['app_times']:
+            session['app_times'][app] = 0
+        session['app_times'][app] += 1
+
+
+class CertPinningBypass:
+    """
+    Håndterer certificate pinned apps
+
+    Strategi: Passthrough for kjente pinned apps
+    """
+
+    PINNED_DOMAINS = [
+        # TikTok
+        'tiktok.com', 'tiktokv.com', 'bytedance',
+        'byteoversea.com', 'byteimg.com', 'musical.ly',
+        # Banking (Norge)
+        'dnb.no', 'nordea.no', 'sbanken.no', 'sparebank1.no',
+        'vipps.no', 'mobilepay.no',
+        # Apple
+        'apple.com', 'icloud.com', 'apple-cloudkit.com',
+        # Google
+        'google.com', 'googleapis.com', 'gstatic.com',
+        # Social (some)
+        'whatsapp.net', 'signal.org',
+    ]
+
+    def __init__(self):
+        self.learned_pinned: set[str] = set()
+        self.failure_counts: dict[str, int] = {}
+
+    def is_pinned(self, host: str) -> bool:
+        """Sjekk om host er cert-pinned"""
+        host_lower = host.lower()
+
+        # Kjent pinned
+        for domain in self.PINNED_DOMAINS:
+            if domain in host_lower:
+                return True
+
+        # Lært pinned
+        if host_lower in self.learned_pinned:
+            return True
+
+        return False
+
+    def record_failure(self, host: str):
+        """Registrer TLS-feil (indikerer pinning)"""
+        host_lower = host.lower()
+        self.failure_counts[host_lower] = self.failure_counts.get(host_lower, 0) + 1
+
+        # Etter 3 failures, marker som pinned
+        if self.failure_counts[host_lower] >= 3:
+            self.learned_pinned.add(host_lower)
+            logger.info(f"Learned cert-pinned domain: {host_lower}")
+
+
+class AIKIUltimateAddon:
+    """
+    HOVEDKLASSE: AIKI Ultimate Proxy Addon
+
+    Verdens mest kompliserte MITM proxy - spesialdesignet for
+    ADHD accountability og innholds-manipulasjon.
+    """
+
+    def __init__(self):
+        logger.info("=" * 60)
+        logger.info("AIKI TRAFFIC INTELLIGENCE PLATFORM")
+        logger.info("=" * 60)
+
+        # Core managers
+        self.session_manager = SessionManager()
+        self.pinning_bypass = CertPinningBypass()
+
+        # Statistics
+        self.stats = {
+            'requests_total': 0,
+            'requests_intercepted': 0,
+            'requests_passthrough': 0,
+            'interventions_triggered': 0,
+            'content_injections': 0,
+            'content_blocked': 0,
+            'delays_added': 0,
+            'start_time': time.time()
+        }
+
+        # Initialize engines
+        self._init_engines()
+
+        # Background thread for periodic tasks
+        self._running = True
+        self.bg_thread = threading.Thread(target=self._background_tasks, daemon=True)
+        self.bg_thread.start()
+
+        logger.info("AIKI Ultimate Addon initialized")
+
+    def _init_engines(self):
+        """Initialize all AIKI engines"""
+        if not ENGINES_AVAILABLE:
+            logger.warning("Engines not available - running in basic mode")
+            self.classifier = None
+            self.analytics = None
+            self.content_intel = None
+            self.intervention = None
+            self.federation = None
+            return
+
+        try:
+            logger.info("Initializing TLS Fingerprint Engine...")
+            self.fingerprint = TLSFingerprintEngine()  # Bruker intern DB_PATH
+
+            logger.info("Initializing App Classifier...")
+            self.classifier = create_classifier(str(DATA_DIR))
+
+            logger.info("Initializing Behavioral Analytics...")
+            self.analytics = create_analytics_engine(str(DATA_DIR))
+
+            logger.info("Initializing Content Intelligence...")
+            self.content_intel = create_content_intelligence(str(DATA_DIR))
+
+            logger.info("Initializing Active Intervention...")
+            self.intervention = create_intervention_engine(str(DATA_DIR))
+
+            logger.info("Initializing Federation Protocol...")
+            self.federation = create_federation_engine(str(DATA_DIR))
+
+            logger.info("Initializing App Throttler...")
+            self.throttler = create_throttler(str(DATA_DIR))
+            self.tiktok_throttler = TikTokThrottler(self.throttler)
+
+            logger.info("All engines initialized successfully!")
+
+        except Exception as e:
+            logger.error(f"Error initializing engines: {e}")
+            self.classifier = None
+            self.analytics = None
+            self.content_intel = None
+            self.intervention = None
+            self.federation = None
+            self.throttler = None
+            self.tiktok_throttler = None
+
+    def _background_tasks(self):
+        """Background tasks thread"""
+        while self._running:
+            try:
+                # Log stats hver 60 sek
+                time.sleep(60)
+                self._log_stats()
+
+                # Share stats til federation hver time
+                if self.federation and (time.time() % 3600) < 60:
+                    self.federation.share_stats()
+
+            except Exception as e:
+                logger.error(f"Background task error: {e}")
+
+    def _log_stats(self):
+        """Log statistics"""
+        uptime = time.time() - self.stats['start_time']
+        logger.info(f"Stats - Uptime: {uptime/60:.1f}min, "
+                   f"Total: {self.stats['requests_total']}, "
+                   f"Intercepted: {self.stats['requests_intercepted']}, "
+                   f"Interventions: {self.stats['interventions_triggered']}, "
+                   f"Injections: {self.stats['content_injections']}")
+
+    def _identify_app(self, host: str) -> str:
+        """Identifiser app fra host"""
+        host_lower = host.lower()
+
+        app_patterns = {
+            'tiktok': ['tiktok', 'bytedance', 'musical.ly'],
+            'instagram': ['instagram', 'cdninstagram', 'fbcdn'],
+            'youtube': ['youtube', 'googlevideo', 'ytimg'],
+            'snapchat': ['snapchat', 'sc-cdn'],
+            'twitter': ['twitter', 'x.com', 'twimg'],
+            'netflix': ['netflix', 'nflxvideo'],
+            'spotify': ['spotify', 'scdn'],
+        }
+
+        for app, patterns in app_patterns.items():
+            if any(p in host_lower for p in patterns):
+                return app
+
+        return 'unknown'
+
+    def _get_session_duration(self, client_ip: str) -> float:
+        """Hent session varighet"""
+        session = self.session_manager.get_or_create_session(client_ip)
+        return time.time() - session['start_time']
+
+    # === MITMPROXY HOOKS ===
+
+    def load(self, loader):
+        """Called when addon is loaded"""
+        logger.info("AIKI addon loaded")
+
+    def configure(self, updated):
+        """Called when config is updated"""
+        pass
+
+    def proxy_running(self):
+        """Called when proxy starts running"""
+        logger.info("AIKI proxy is now running!")
+
+    def tls_clienthello(self, data):
+        """
+        Intercept TLS ClientHello for fingerprinting
+
+        Dette er hvor vi får JA3/JA4 fingerprints!
+        """
+        try:
+            client_ip = data.context.client.peername[0]
+            host = data.context.server.address[0] if data.context.server.address else "unknown"
+
+            # Sjekk for cert pinning
+            if self.pinning_bypass.is_pinned(host):
+                logger.debug(f"Passthrough pinned: {host}")
+                data.ignore_connection = True
+                self.stats['requests_passthrough'] += 1
+                return
+
+            # TODO: Parse ClientHello for JA3/JA4
+            # Dette krever lavnivå TLS parsing
+
+        except Exception as e:
+            logger.debug(f"TLS clienthello error: {e}")
+
+    def tls_failed_client(self, data):
+        """Called when TLS fails - might indicate pinning"""
+        try:
+            host = data.context.server.address[0] if data.context.server.address else "unknown"
+            self.pinning_bypass.record_failure(host)
+        except Exception:
+            pass
+
+    def request(self, flow: http.HTTPFlow):
+        """
+        Intercept HTTP request
+
+        Her kan vi:
+        - Blokkere requests
+        - Legge til delay
+        - Modifisere headers
+        """
+        self.stats['requests_total'] += 1
+
+        try:
+            host = flow.request.host
+            client_ip = flow.client_conn.peername[0]
+            url = flow.request.pretty_url
+
+            # Identifiser app
+            app = self._identify_app(host)
+
+            # Oppdater session
+            self.session_manager.update_activity(client_ip, app)
+            session = self.session_manager.get_or_create_session(client_ip)
+
+            # === APP THROTTLING (NYT!) ===
+            if self.throttler:
+                # Bruk TikTok-spesifikk throttler for TikTok
+                if app == 'tiktok' and self.tiktok_throttler:
+                    throttle_result = self.tiktok_throttler.process_tiktok_request(
+                        url, session['user_id'], client_ip
+                    )
+                else:
+                    throttle_result = self.throttler.process_request(
+                        host, session['user_id'], client_ip
+                    )
+
+                # Apply throttling
+                if throttle_result['block']:
+                    self.stats['content_blocked'] += 1
+                    flow.response = http.Response.make(
+                        403,
+                        throttle_result['message'].encode() or b"Blocked by AIKI - Take a break!",
+                        {"Content-Type": "text/plain"}
+                    )
+                    logger.info(f"BLOCKED: {app} ({throttle_result['reason'].name})")
+                    return
+
+                if throttle_result['delay_ms'] > 0:
+                    time.sleep(throttle_result['delay_ms'] / 1000)
+                    self.stats['delays_added'] += 1
+                    logger.debug(f"Throttled {app}: {throttle_result['delay_ms']}ms ({throttle_result['level'].name})")
+
+                # Store throttle info for logging
+                flow.metadata['aiki_throttle'] = throttle_result
+
+            # === ENGINE INTEGRATION ===
+
+            if self.intervention:
+                # Sjekk om vi skal intervenere
+                session_duration = self._get_session_duration(client_ip)
+
+                decision = self.intervention.process_request(
+                    user_id=session['user_id'],
+                    app=app,
+                    url=url,
+                    session_duration=session_duration,
+                    is_dopamine_loop=session['is_dopamine_loop']
+                )
+
+                # Delay injection
+                if decision['delay_ms'] > 0:
+                    time.sleep(decision['delay_ms'] / 1000)
+                    self.stats['delays_added'] += 1
+
+                # Block
+                if decision['action'] == 'block':
+                    self.stats['content_blocked'] += 1
+                    flow.response = http.Response.make(
+                        403,
+                        b"Blocked by AIKI - Take a break!",
+                        {"Content-Type": "text/plain"}
+                    )
+                    return
+
+                # Store decision for response processing
+                flow.metadata['aiki_decision'] = decision
+                flow.metadata['aiki_app'] = app
+                flow.metadata['aiki_user'] = session['user_id']
+
+            self.stats['requests_intercepted'] += 1
+            logger.debug(f"Request: {app} - {host}")
+
+        except Exception as e:
+            logger.error(f"Request processing error: {e}")
+
+    def response(self, flow: http.HTTPFlow):
+        """
+        Intercept HTTP response
+
+        Her kan vi:
+        - Modifisere innhold (CONTENT INJECTION!)
+        - Analysere innhold
+        - Logge data
+        """
+        try:
+            host = flow.request.host
+            app = flow.metadata.get('aiki_app', 'unknown')
+            decision = flow.metadata.get('aiki_decision', {})
+            user_id = flow.metadata.get('aiki_user', 'default')
+
+            # === TIKTOK CONTENT INJECTION ===
+            if decision.get('inject_content') and app == 'tiktok':
+                if self._is_tiktok_feed_response(flow):
+                    self._inject_tiktok_content(flow, user_id)
+
+            # === CONTENT INTELLIGENCE ===
+            if self.content_intel and self._is_json_response(flow):
+                self._analyze_content(flow, app)
+
+            # === BEHAVIORAL ANALYTICS ===
+            if self.analytics:
+                self._record_analytics(flow, app)
+
+        except Exception as e:
+            logger.error(f"Response processing error: {e}")
+
+    def _is_tiktok_feed_response(self, flow: http.HTTPFlow) -> bool:
+        """Sjekk om dette er TikTok feed response"""
+        url = flow.request.pretty_url
+        patterns = [
+            '/api/recommend/item_list',
+            '/api/feed/',
+            '/aweme/v1/feed',
+        ]
+        return any(p in url for p in patterns)
+
+    def _is_json_response(self, flow: http.HTTPFlow) -> bool:
+        """Sjekk om response er JSON"""
+        content_type = flow.response.headers.get('content-type', '')
+        return 'json' in content_type.lower()
+
+    def _inject_tiktok_content(self, flow: http.HTTPFlow, user_id: str):
+        """
+        INJISER EDUCATIONAL CONTENT I TIKTOK FEED!
+
+        Dette er DRØMMEN!
+        """
+        try:
+            if not self.intervention:
+                return
+
+            body = flow.response.get_content()
+            if not body:
+                return
+
+            # Process with intervention engine
+            modified_body, stats = self.intervention.process_response(
+                body,
+                app='tiktok',
+                inject_content=True,
+                age_group='kids'  # TODO: Hent fra user profile
+            )
+
+            if stats['modified']:
+                flow.response.set_content(modified_body)
+                self.stats['content_injections'] += stats['injected']
+                logger.info(f"Injected {stats['injected']} educational videos into TikTok feed!")
+
+        except Exception as e:
+            logger.error(f"TikTok injection error: {e}")
+
+    def _analyze_content(self, flow: http.HTTPFlow, app: str):
+        """Analyser innhold med Content Intelligence"""
+        try:
+            body = flow.response.get_content()
+            if not body:
+                return
+
+            # Decompress if needed
+            try:
+                body_text = gzip.decompress(body).decode('utf-8')
+            except:
+                body_text = body.decode('utf-8')
+
+            # Parse JSON
+            try:
+                data = json.loads(body_text)
+            except:
+                return
+
+            # Analyze (background - don't block)
+            # TODO: Send to async queue
+            pass
+
+        except Exception as e:
+            logger.debug(f"Content analysis error: {e}")
+
+    def _record_analytics(self, flow: http.HTTPFlow, app: str):
+        """Record to behavioral analytics"""
+        try:
+            # Record event
+            if 'video' in flow.request.pretty_url.lower():
+                # Video event
+                pass
+
+            if 'scroll' in flow.request.pretty_url.lower():
+                # Scroll event
+                pass
+
+        except Exception as e:
+            logger.debug(f"Analytics error: {e}")
+
+    def done(self):
+        """Called when proxy shuts down"""
+        self._running = False
+        logger.info("AIKI addon shutting down")
+        self._log_stats()
+
+
+# Addon instance for mitmproxy
+addons = [AIKIUltimateAddon()]

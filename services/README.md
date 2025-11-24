@@ -10,4 +10,4 @@ Daemons og systemd services
 | [systemd/](systemd/) | Systemd service-filer |
 
 ---
-*Auto-generert: 2025-11-24 01:00*
+*Auto-generert: 2025-11-24 02:00*

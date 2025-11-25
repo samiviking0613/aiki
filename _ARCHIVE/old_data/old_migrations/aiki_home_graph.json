@@ -1,0 +1,165 @@
+{
+  "entities": [
+    {
+      "id": "jovnna",
+      "name": "Jovnna",
+      "type": "person",
+      "properties": {
+        "has_adhd": true,
+        "role": "developer"
+      }
+    },
+    {
+      "id": "adhd",
+      "name": "ADHD",
+      "type": "condition",
+      "properties": {
+        "requires_structure": true,
+        "requires_accountability": true
+      }
+    },
+    {
+      "id": "aiki_home",
+      "name": "AIKI-HOME",
+      "type": "system",
+      "properties": {
+        "purpose": "Network-level ADHD accountability",
+        "status": "phase_1_complete"
+      }
+    },
+    {
+      "id": "mitm_proxy",
+      "name": "MITM Proxy",
+      "type": "system",
+      "properties": {
+        "port": 8080,
+        "technology": "mitmproxy"
+      }
+    },
+    {
+      "id": "decision_engine",
+      "name": "Decision Engine",
+      "type": "system",
+      "properties": {
+        "rules_count": 12,
+        "uses_llm": true
+      }
+    },
+    {
+      "id": "morning_workout_rule",
+      "name": "Morning Workout Rule",
+      "type": "rule",
+      "properties": {
+        "deadline": "10:00",
+        "blocks_work_sites": true
+      }
+    },
+    {
+      "id": "work_hours_rule",
+      "name": "Work Hours Focus Rule",
+      "type": "rule",
+      "properties": {
+        "start": "08:00",
+        "end": "16:00",
+        "blocks_entertainment": true
+      }
+    },
+    {
+      "id": "motion_sensor",
+      "name": "Motion Sensor",
+      "type": "hardware",
+      "properties": {
+        "purpose": "Verify workout completion"
+      }
+    },
+    {
+      "id": "raspberry_pi",
+      "name": "Raspberry Pi",
+      "type": "hardware",
+      "properties": {
+        "role": "Network gateway",
+        "status": "planned"
+      }
+    }
+  ],
+  "relations": [
+    {
+      "source": "jovnna",
+      "relation": "has_condition",
+      "target": "adhd",
+      "properties": {}
+    },
+    {
+      "source": "jovnna",
+      "relation": "uses",
+      "target": "aiki_home",
+      "properties": {
+        "since": "2025-11-17"
+      }
+    },
+    {
+      "source": "adhd",
+      "relation": "requires",
+      "target": "aiki_home",
+      "properties": {
+        "reason": "external_accountability"
+      }
+    },
+    {
+      "source": "aiki_home",
+      "relation": "uses",
+      "target": "mitm_proxy",
+      "properties": {
+        "role": "traffic_interception"
+      }
+    },
+    {
+      "source": "aiki_home",
+      "relation": "uses",
+      "target": "decision_engine",
+      "properties": {
+        "role": "rule_evaluation"
+      }
+    },
+    {
+      "source": "aiki_home",
+      "relation": "enforces",
+      "target": "morning_workout_rule",
+      "properties": {
+        "priority": "high"
+      }
+    },
+    {
+      "source": "aiki_home",
+      "relation": "enforces",
+      "target": "work_hours_rule",
+      "properties": {
+        "priority": "medium"
+      }
+    },
+    {
+      "source": "morning_workout_rule",
+      "relation": "requires",
+      "target": "motion_sensor",
+      "properties": {
+        "for": "verification"
+      }
+    },
+    {
+      "source": "aiki_home",
+      "relation": "requires",
+      "target": "raspberry_pi",
+      "properties": {
+        "for": "production_deployment"
+      }
+    },
+    {
+      "source": "mitm_proxy",
+      "relation": "depends_on",
+      "target": "decision_engine",
+      "properties": {
+        "communication": "FastAPI"
+      }
+    }
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python /home/jovnna/aiki/auto_resume.py"
+          }
+        ]
+      }
+    ]
+  }
+}

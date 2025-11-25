@@ -1,0 +1,53 @@
+{
+  "total_projects_analyzed": 10,
+  "aggregated_problems": {
+    "file_system": 598,
+    "configuration_issues": 515,
+    "debugging": 387,
+    "api_errors": 361,
+    "authentication": 320,
+    "port_binding": 308,
+    "process_management": 295,
+    "dependency": 216,
+    "network": 122,
+    "context_loss": 34
+  },
+  "aggregated_adhd": {
+    "lost_thread": 8,
+    "repetitive": 5,
+    "too_complex": 3,
+    "time_sink": 3
+  },
+  "root_causes": {
+    "SETUP HELL": {
+      "problem": "Configuration, authentication, file system issues",
+      "count": 1433,
+      "severity": "KRITISK",
+      "adhd_impact": "EKSTREMT HØY - bryter flow konstant"
+    },
+    "REPETITIVE DEBUGGING": {
+      "problem": "Samme feil om og om igjen, manual troubleshooting",
+      "count": 748,
+      "severity": "HØY",
+      "adhd_impact": "HØY - ødelegger motivasjon"
+    },
+    "CONTEXT LOSS": {
+      "problem": "Mister hvor du var, må rekonstruere mental state",
+      "count": 34,
+      "severity": "HØY",
+      "adhd_impact": "KRITISK - kjerneproblemet for ADHD"
+    },
+    "PROCESS MANAGEMENT": {
+      "problem": "Manuelt kill/restart, ingen oversikt over hva som kjører",
+      "count": 295,
+      "severity": "MEDIUM",
+      "adhd_impact": "MEDIUM - kognitiv belastning"
+    },
+    "NETWORK COMPLEXITY": {
+      "problem": "VPN, proxy, port forwarding - mange bevegelige deler",
+      "count": 430,
+      "severity": "HØY",
+      "adhd_impact": "HØY - vanskelig å debugge"
+    }
+  }
+}

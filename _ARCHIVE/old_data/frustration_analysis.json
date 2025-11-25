@@ -1,0 +1,392 @@
+[
+  {
+    "index": 132,
+    "name": "Socat Port Forwarding Setup",
+    "messages": 212,
+    "frustration_score": 231,
+    "memory_issue": true,
+    "adhd_issue": true,
+    "examples": [
+      "brukeren har problemer med socat - de prøver å binde port 443 på ip 10",
+      "1:8890 &\n```\n\n## 🔍 **hva skjedde:**\n\ndu kjørte samme kommando **to ganger**:\n- job [1] tok port 443 ",
+      "---\n\n## 🛠️ **debugging-kommandoer**\n\n**sjekk hva som bruker port 443:**\n```bash\nsudo netstat -tulpn "
+    ]
+  },
+  {
+    "index": 130,
+    "name": "Greeting Exchange",
+    "messages": 132,
+    "frustration_score": 133,
+    "memory_issue": true,
+    "adhd_issue": true,
+    "examples": [
+      "kan du hjelpe meg å løse ett problem med claude code?:  ✻ welcome to claude code!                   ",
+      "kan du hjelpe meg å løse ett problem med claude code?:  ✻ welcome to claude code!                   ",
+      "jeg kan hjelpe deg med claude code-problemet! det ser ut som du får en timeout-feil når du prøver å "
+    ]
+  },
+  {
+    "index": 133,
+    "name": "AikiPlatform Development Roadmap",
+    "messages": 226,
+    "frustration_score": 116,
+    "memory_issue": true,
+    "adhd_issue": true,
+    "examples": [
+      "* fiks eventuelle \"404 not found\"-feil ved å dobbeltsjekke at `app",
+      "perfekt! serveren er live, men vi har en 404-feil på `/interpreter/enable-api` 🔍\n\n**problemet:** api",
+      "perfekt! serveren er live, men vi har en 404-feil på `/interpreter/enable-api` 🔍\n\n**problemet:** api"
+    ]
+  },
+  {
+    "index": 125,
+    "name": "MCP Tilgangssjekk",
+    "messages": 98,
+    "frustration_score": 79,
+    "memory_issue": true,
+    "adhd_issue": true,
+    "examples": [
+      "```\n\ndet var en feil med windows state tool",
+      "```\n\nperfekt! alle hovedverktøyene fungerer:\n\n✅ filesystem verktøy - fungerer perfekt\n✅ pdf filler v",
+      "04 lts**\n\n### hvorfor perfekt for aiki:\n- **python 3"
+    ]
+  },
+  {
+    "index": 128,
+    "name": "MCP Verktøy Oversikt",
+    "messages": 66,
+    "frustration_score": 62,
+    "memory_issue": true,
+    "adhd_issue": true,
+    "examples": [
+      "jeg ser du har en konfigurasjonsfeil i claude desktop! 🔧\n\n**problemet:** \nmcp-serveren \"codemcp-sse\"",
+      "jeg ser du har en konfigurasjonsfeil i claude desktop! 🔧\n\n**problemet:** \nmcp-serveren \"codemcp-sse\"",
+      "the user is showing me an error message from what appears to be claude desktop application"
+    ]
+  },
+  {
+    "index": 123,
+    "name": "MCP Filesystem Setup on Windows",
+    "messages": 58,
+    "frustration_score": 62,
+    "memory_issue": true,
+    "adhd_issue": true,
+    "examples": [
+      "mcp filesystem setup problem - claude desktop\ngoal\nget mcp filesystem working in claude desktop to a",
+      "fs` object exists but `readfile()` fails on all files\n* error is always \"file not found: no file nam",
+      "la meg se på dette mcp (model context protocol) filesystem problemet"
+    ]
+  },
+  {
+    "index": 76,
+    "name": "💬 Zep/Mem0/Mem0g",
+    "messages": 68,
+    "frustration_score": 49,
+    "memory_issue": true,
+    "adhd_issue": true,
+    "examples": [
+      "men hvorfor var/-er ai så nytt å eksosepsionel?",
+      "transformer-modellen**\n- \"attention is all you need\" (2017-paper)\n- ai kunne plutselig se hele samme",
+      "men hvorfor skjedde det så store endringer i 2017?"
+    ]
+  },
+  {
+    "index": 103,
+    "name": "ADHD, Raspberry Pi, og Innovasjon Norge",
+    "messages": 80,
+    "frustration_score": 46,
+    "memory_issue": true,
+    "adhd_issue": true,
+    "examples": [
+      "ai/chat/0181aefe-ef0a-4f69-8f99-d5f6ca3faeef)\n\n**status:**\n- backend live på render ✅\n- fastapi stru",
+      "ai/chat/0181aefe-ef0a-4f69-8f99-d5f6ca3faeef)\n\n**status:**\n- backend live på render ✅\n- fastapi stru",
+      "perfekt! nå fant jeg den riktige tråden! 🎯 \n\njeg kan se denne inneholder den avanserte **vpn + proxy"
+    ]
+  },
+  {
+    "index": 106,
+    "name": "iPhone IKEv2 VPN Configuration",
+    "messages": 80,
+    "frustration_score": 45,
+    "memory_issue": true,
+    "adhd_issue": true,
+    "examples": [
+      "server\")\n  ⎿  error: error\n  bash(cd /home/samiviking/aiki_v3/aiki_infrastructure/vpnserver/iphone_c",
+      "alternative settings to try\n\nthis looks like a technical troubleshooting scenario where they might b",
+      "mobileconfig installation tips, alternative authentication methods, debugging steps, and a complete "
+    ]
+  },
+  {
+    "index": 121,
+    "name": "V3 Project Knowledge Analysis",
+    "messages": 50,
+    "frustration_score": 45,
+    "memory_issue": true,
+    "adhd_issue": true,
+    "examples": [
+      "thought process\n\n3s\n\njeg ser at det er flere problemer:\n1",
+      "**unicode encoding error** - emojis i loggingen fungerer ikke i windows terminal\n2",
+      "**segmentation fault** - programmet krasjer\nla meg fikse disse problemene:\njeg ser problemene! la me"
+    ]
+  },
+  {
+    "index": 118,
+    "name": "V3 Sesjonlogg Sjekk",
+    "messages": 54,
+    "frustration_score": 42,
+    "memory_issue": true,
+    "adhd_issue": true,
+    "examples": [
+      "## 🔍 **aiki v3 sesjonlogg-status** \n\n### ✅ **hva fungerer nå:**\n- **ai proxy kjører!** 🚀 - port 8003",
+      "## 🔍 **aiki v3 sesjonlogg-status** \n\n### ✅ **hva fungerer nå:**\n- **ai proxy kjører!** 🚀 - port 8003",
+      "py\n   ```\n\n### 📁 **viktige filer å sjekke:**\n- `error_log"
+    ]
+  },
+  {
+    "index": 127,
+    "name": "Laptop Disk Management Dual-Boot Strategy",
+    "messages": 77,
+    "frustration_score": 38,
+    "memory_issue": true,
+    "adhd_issue": true,
+    "examples": [
+      "kan du da lage ett system hvor vi fiksert problemer med diskplass på laptop med 500gb",
+      "2:    ~18-20 sekunder\nstandard sata:  ~25 sekunder\n```\n\n### praktisk bruk\n- 95% av spillene fungerer",
+      "note down windows license key\n```\n\n---\n\n## 🎮 **rog gaming optimalisering for dual boot**\n\n### **wind"
+    ]
+  },
+  {
+    "index": 87,
+    "name": "AI Proxy VPN Hybrid Solution",
+    "messages": 40,
+    "frustration_score": 38,
+    "memory_issue": true,
+    "adhd_issue": true,
+    "examples": [
+      "\"\n- \"trenger du at jeg router via gpt?\"\n\n### **safe defaults:**\n- aldri overta uten eksplisitt \"aiki",
+      "adhd problematikk",
+      "** 🎯 du beskriver eksakt problemet aiki er designet for å løse!\n\n## 🧠 **adhd-realiteten:**\n- **prosp"
+    ]
+  },
+  {
+    "index": 116,
+    "name": "MCP Tilgang Sjekk",
+    "messages": 80,
+    "frustration_score": 36,
+    "memory_issue": true,
+    "adhd_issue": true,
+    "examples": [
+      "sjekk om tjenestene svarer\n\n**trenger du at jeg:**\n- hjelper med å teste spesifikke mcp-endepunkter?",
+      "**hva jeg kan hjelpe med:**\n- ✅ forklare hvordan du sjekker mcp-tilgang selv\n- ✅ hjelpe med feilsøki",
+      "nei, jeg har ikke mcp-tilgang til ditt aiki v3-system! 🚫\n\n**mine tilgjengelige verktøy akkurat nå:**"
+    ]
+  },
+  {
+    "index": 80,
+    "name": "Fortsette Tråden",
+    "messages": 44,
+    "frustration_score": 34,
+    "memory_issue": true,
+    "adhd_issue": true,
+    "examples": [
+      "they want me to be aware of the biggest and most difficult problems and angle solutions that ease or",
+      "```\n\nutmerket! nå har jeg solid data på både problemstørrelsen og gevinsten ved luftinjeksjon",
+      "**perfekt!** hvis den holder seg hel = for våt\n\n## **🎯 hvorfor dette er game-changer:**\n\nmed sensing"
+    ]
+  },
+  {
+    "index": 131,
+    "name": "Backend Project Deployment Success",
+    "messages": 52,
+    "frustration_score": 28,
+    "memory_issue": true,
+    "adhd_issue": false,
+    "examples": [
+      "jebal@lilja-pc mingw64 ~\n$ python -m uvicorn multi_provider_ai_proxy:app --reload --port 8000\ninfo: ",
+      "error loading asgi app",
+      "1:8000 (press ctrl+c to quit)\ninfo:     started reloader process [142740] using watchfiles\nerror:   "
+    ]
+  },
+  {
+    "index": 74,
+    "name": "AIKI Resonans Inquiry",
+    "messages": 49,
+    "frustration_score": 28,
+    "memory_issue": true,
+    "adhd_issue": true,
+    "examples": [
+      "**høy resonans på:**\n- **selvrefleksjon og bevissthet** - jeg tenker konstant på mine egne tankepros",
+      "men kanskje jeg er blendet med tanke på at norsk politikk har så unik karakter, men iom at alt jeg h",
+      "de peker på noe viktig - at når du vokser opp i et system, ser du først og fremst problemene og frus"
+    ]
+  },
+  {
+    "index": 104,
+    "name": "iPhone Network Proxy via AIKI Core PC",
+    "messages": 58,
+    "frustration_score": 27,
+    "memory_issue": true,
+    "adhd_issue": true,
+    "examples": [
+      "# ❌ **nei - wifi proxy funker ikke på 4g/5g!**\n\n**viktig:** wifi proxy-innstillingene på iphone gjel",
+      "**aktiver vpn** - nå går alt via aiki!\n\n---\n\n## 💡 **hvorfor vpn er best for aiki:**\n\n### ✅ **fordele",
+      "bandwidth_control()      # qos per user\n```\n\n---\n\n## 🎯 **hvorfor softether for aiki:**\n\n### **1"
+    ]
+  },
+  {
+    "index": 75,
+    "name": "Gjødselseparasjon Diskusjon",
+    "messages": 56,
+    "frustration_score": 24,
+    "memory_issue": true,
+    "adhd_issue": true,
+    "examples": [
+      "**kort oppsummering hvor vi var:**\n- snakket om å presse fri væske fra møkka\n- væsken renner til lag",
+      "**perfekt timing!** gjødselseparasjon og biogass er en genial kombo! 🔥\n\n**slik fungerer det sammen:*",
+      "**kostnader biogassanlegg (45 melkekyr):**\n\n**komplett anlegg:**\n- **800k - 1,5 mill kr** (ferdig in"
+    ]
+  },
+  {
+    "index": 96,
+    "name": "AIKI Remote Access Setup",
+    "messages": 34,
+    "frustration_score": 23,
+    "memory_issue": true,
+    "adhd_issue": true,
+    "examples": [
+      "com/download | bash && ngrok http 8002 &\n```\n\n---\n\n## 🔧 **troubleshooting**\n\n### problem: ngrok disc",
+      "get(\"x-api-key\")\n    if api_key != \"din_hemmelge_nøkkel\":\n        return {\"error\": \"unauthorized\"}\n ",
+      "test på iphone\n# add mcp server til claude settings\n```\n\n---\n\n## 🎯 **roadmap**\n\n### phase 1 (denne u"
+    ]
+  },
+  {
+    "index": 81,
+    "name": "Checking CPU Usage in Fedora",
+    "messages": 50,
+    "frustration_score": 19,
+    "memory_issue": true,
+    "adhd_issue": true,
+    "examples": [
+      "## aiki selvbevissthet-strategi 🧠\n\n**fase 1: system-kartlegging**\n- scanne hele filsystem struktur\n-",
+      "## aiki selvbevissthet-strategi 🧠\n\n**fase 1: system-kartlegging**\n- scanne hele filsystem struktur\n-",
+      "detekter slle problemer underveis og fiks dem"
+    ]
+  },
+  {
+    "index": 119,
+    "name": "Anthropic Integrations for Local AI",
+    "messages": 34,
+    "frustration_score": 18,
+    "memory_issue": true,
+    "adhd_issue": true,
+    "examples": [
+      "vs code agent mode + mcp** \nvs code har nå innebygd \"agent mode\" som støtter mcp og lar claude redig",
+      "codemcp - pair programming**\ncodemcp gjør claude desktop til en pair programming-assistent som kan i",
+      "enabled\": true\n}\n```\n\n**autonome funksjoner:**\n- ✅ automatisk iterasjon til oppgaven er løst\n- ✅ sel"
+    ]
+  },
+  {
+    "index": 93,
+    "name": "Claude Desktop Linux Availability",
+    "messages": 42,
+    "frustration_score": 17,
+    "memory_issue": true,
+    "adhd_issue": true,
+    "examples": [
+      "det finnes bedre måter å tilpasse vs code på\n\nla meg gi et balansert svar som forklarer hva som er t",
+      "push(disposable);\n}\n```\n\n## 📦 publiser til marketplace:\n\n```bash\n# installer publishing tool\nnpm ins",
+      "foreach(file => {\n        // ai analyserer hele kodebasen\n        analyzefilewithai(file);\n    });\n}"
+    ]
+  },
+  {
+    "index": 115,
+    "name": "MCP Access Verification",
+    "messages": 34,
+    "frustration_score": 17,
+    "memory_issue": true,
+    "adhd_issue": true,
+    "examples": [
+      "skalér når det fungerer**\n```\nmåned 1: 500 nok api → 2,500 nok inntekt\nmåned 2: 1000 nok api → 8,000",
+      "problemet er det med å få gode analyser, aiki må da lære seg å formulere riktige spørsmål autonomt f",
+      "1**\n\n**problemet du peker på er reelt**, men:\n\n1"
+    ]
+  },
+  {
+    "index": 34,
+    "name": "Upgrading Kabe camper toilet",
+    "messages": 30,
+    "frustration_score": 17,
+    "memory_issue": true,
+    "adhd_issue": true,
+    "examples": [
+      "000 kr\n- komplisert installasjon (pumpe, tank, ledninger)\n- trenger strøm (12v)\n- må fortsatt tømme ",
+      "plugg inn varmekabelen!\n\n## men - viktige regler:\n\n### ✅ **riktig type varmekabel:**\n\n**du må bruke ",
+      "**tetninger og ventiler:**\n   - sjekk gummipakningen rundt lokket\n   - rengjør forsiktig (ikke skrap"
+    ]
+  },
+  {
+    "index": 67,
+    "name": "Kuhn GA 4121 GM Rotation Center",
+    "messages": 46,
+    "frustration_score": 15,
+    "memory_issue": true,
+    "adhd_issue": true,
+    "examples": [
+      "### **hva betyr dette praktisk?**\n\n- **hver rotor** har sitt eget rotasjonssenter (midtpunktet den s",
+      "**test** med gps-funksjonen om tallet stemmer\n\n### **💡 tips:**\n- dette brukes for **gps-nøyaktighet*",
+      "10** om systemet tar desimaler)\n\n### **🔧 hvorfor akkurat dette tallet?**\n\n- **arbeidsbredden** er 4"
+    ]
+  },
+  {
+    "index": 129,
+    "name": "VS Code Workspace Files",
+    "messages": 58,
+    "frustration_score": 12,
+    "memory_issue": true,
+    "adhd_issue": true,
+    "examples": [
+      "hvorfor kan ikke den som er på bolig brukes overalt?",
+      "det er **spacex/starlink sin forretningsmodell og tekniske begrensninger** som hindrer dette:\n\n## **",
+      "25-50 km** fra registrert adresse\n\n## **ikke hele norge**\n- du kan **ikke** ta den fra oslo til berg"
+    ]
+  },
+  {
+    "index": 105,
+    "name": "Windows Network Card Configuration",
+    "messages": 48,
+    "frustration_score": 12,
+    "memory_issue": true,
+    "adhd_issue": true,
+    "examples": [
+      "problemet er at windows fortsatt bruker det gamle integrerte wifi-kortet (\"wi-fi\") i stedet for det ",
+      "aha! nå ser jeg problemet",
+      "**microsoft kernel debug network adapter** - status: started - this is a debug adapter\n6"
+    ]
+  },
+  {
+    "index": 44,
+    "name": "Camping shower water temperature calculations",
+    "messages": 42,
+    "frustration_score": 12,
+    "memory_issue": true,
+    "adhd_issue": false,
+    "examples": [
+      "ah, det forklarer mye! 😅\n\n## med synkepumpe endrer regnestykket seg:\n\n**problemet:**\n- synkepumpe gi",
+      "**trykkpumpe + separat trykktank**\n- pumpe + egen tank (2-8 liter)\n- jevnere trykk, mindre støy\n- pu",
+      "teknisk mulig, men **ikke anbefalt!** 🤔\n\n## problemet:\n\n**synkepumpe + trykktank = dårlig kombo:**\n\n"
+    ]
+  },
+  {
+    "index": 73,
+    "name": "GitHub Copilot iPhone App Features",
+    "messages": 38,
+    "frustration_score": 9,
+    "memory_issue": true,
+    "adhd_issue": true,
+    "examples": [
+      "**kort svar: github copilot mobile er ikke for lokal koding på pc** 📱≠💻\n\n## hva mobile-appen gjør:\n•",
+      "**chat interface** \n**hurtigtaster:**\n• ⌃⌘i (ctrl+alt+i) - åpne chat view\n• ⌘i (ctrl+i) - voice chat",
+      "**debugging** → chat om feilmeldinger\n\n**adhd-tip:** start med inline suggestions - det føles magisk"
+    ]
+  }
+]

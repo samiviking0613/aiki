@@ -33,7 +33,7 @@ from enum import Enum
 import logging
 
 # Setup
-os.environ['OPENAI_API_KEY'] = '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'
+os.environ['OPENAI_API_KEY'] = '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'
 os.environ['OPENAI_BASE_URL'] = 'https://openrouter.ai/api/v1'
 
 from mem0 import Memory

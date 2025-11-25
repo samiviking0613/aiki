@@ -26,9 +26,8 @@ credentials*.json
 *_api_key*
 .claude/settings.local.json
 ClaudeChats/
-_ARCHIVE/deprecated_code/
-_ARCHIVE/*.json
-_ARCHIVE/ps5_setup/
+Api-nøkler/
+_ARCHIVE/
 
 # IDE
 .idea/

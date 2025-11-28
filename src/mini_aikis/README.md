@@ -17,4 +17,4 @@ Mini-AIKIs - Spesialiserte sub-agenter
 | `base_mini_aiki.py` | BASE MINI-AIKI - Level 2 |
 
 ---
-*Auto-generert: 2025-11-25 04:01*
+*Auto-generert: 2025-11-28 17:00*

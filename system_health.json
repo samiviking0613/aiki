@@ -1,5 +1,5 @@
 {
-  "timestamp": "2025-11-25T03:59:32.780620",
+  "timestamp": "2025-11-25T04:13:37.591783",
   "services": {
     "memory_daemon": {
       "status": "stopped",
@@ -17,9 +17,9 @@
     }
   },
   "resources": {
-    "cpu_percent": 7.9,
-    "memory_percent": 39.3,
-    "memory_available_gb": 9.32,
+    "cpu_percent": 2.3,
+    "memory_percent": 39.2,
+    "memory_available_gb": 9.33,
     "disk_percent": 3.9,
     "disk_free_gb": 455.14,
     "external_disk": {
@@ -43,7 +43,7 @@
   "processes": {
     "total_python_processes": 6,
     "total_cpu": 0,
-    "total_memory_mb": 584.27734375,
+    "total_memory_mb": 585.140625,
     "anomalies": []
   }
 }

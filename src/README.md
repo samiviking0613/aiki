@@ -32,4 +32,4 @@ Kildekode for AIKI-systemet
 | `smart_model_selector.py` | Smart Model Selector for AIKI Chat v2 |
 
 ---
-*Auto-generert: 2025-11-25 04:01*
+*Auto-generert: 2025-11-28 17:00*

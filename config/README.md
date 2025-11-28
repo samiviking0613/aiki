@@ -12,4 +12,4 @@ Konfigurasjonsfiler
 - `prime_config.json`
 
 ---
-*Auto-generert: 2025-11-25 04:01*
+*Auto-generert: 2025-11-28 17:00*
